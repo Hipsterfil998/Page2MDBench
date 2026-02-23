@@ -1,0 +1,6 @@
+requests
+pypandoc
+pdf2image
+Pillow
+weasyprint
+beautifulsoup4
