@@ -18,6 +18,7 @@ Colab setup:
 
 import json
 import re
+import shutil
 from pathlib import Path
 
 from book_mdBench.config import LANGUAGES, N_BOOKS, N_PAGES, OUTPUT_DIR
@@ -82,7 +83,8 @@ class BenchmarkBuilder:
                 })
 
         if len(page_records) < N_PAGES:
-            print(f"    ✗ Only {len(page_records)}/{N_PAGES} pages saved, skipping")
+            print(f"    ✗ Only {len(page_records)}/{N_PAGES} pages, skipping")
+            shutil.rmtree(book_dir)
             return None
 
         print(f"    ✓ {len(page_records)} pages saved")
