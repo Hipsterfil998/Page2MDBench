@@ -40,9 +40,10 @@ Each `.md` file preserves:
 | Parameter | Value |
 |---|---|
 | Languages | Italian, German |
-| Books per language | 15 |
+| Books per language | 1 (`N_BOOKS` in `config.py`) |
 | Pages per book | 20 |
-| Sampling strata | front: 2, body: 10, back: 5 (+ 3 mandatory frontmatter) |
+| Mandatory frontmatter pages | 3 |
+| Sampling strata | front: 2, body: 10, back: 5 |
 | Image DPI | 200 |
 | JPEG quality | 92 |
 
@@ -70,39 +71,60 @@ pip install -r requirements.txt
 
 ## Usage
 
+### Build the dataset
+
 ```bash
 python main.py
 ```
 
-Output will be saved to `./benchmark_data/`.
+Output will be saved to `./dataset/`.
+
+### Evaluate predictions
+
+Single pair:
+
+```bash
+python eval.py ground_truth.md prediction.md
+```
+
+Batch (all `.md` files in a directory):
+
+```bash
+python eval.py --ref-dir dataset/italian/book_123/pages \
+               --pred-dir predictions/italian/book_123
+```
+
+Metrics computed: **NED** (Normalised Edit Distance, lower is better) and **BLEU** (higher is better).
 
 ## Project Structure
 
 ```
 book_mdBench/
-├── book_mdBench/          # Python package (core logic)
-│   ├── __init__.py
-│   ├── config.py
-│   ├── gutenberg_client.py
-│   ├── epub_converter.py  # EPUB spine parsing + HTML → Markdown
-│   ├── page_sampler.py    # page-sized chunk splitting + stratified sampling
-│   └── page_renderer.py   # Markdown → PDF (xelatex) → JPEG
+├── main.py                # Entry point — builds the dataset
+├── eval.py                # Evaluation script (NED + BLEU)
+├── config.py              # Global parameters
 │
-├── main.py                # Entry point
-├── requirements.txt
-└── README.md
+├── book2md/               # Core pipeline package
+│   ├── gutenberg_client.py  # Project Gutenberg search + EPUB download
+│   ├── epub_converter.py    # EPUB spine parsing + HTML → Markdown
+│   ├── page_sampler.py      # Chunk splitting + stratified sampling
+│   └── page_renderer.py     # Markdown → PDF (xelatex) → JPEG
+│
+└── metrics/               # Evaluation metrics
+    ├── ned.py               # Normalised Edit Distance
+    └── bleu.py              # BLEU score (sacrebleu)
 ```
 
 ## Output Structure
 
 ```
-benchmark_data/
+dataset/
 ├── metadata.json
 ├── italian/
 │   ├── metadata.json
 │   └── <book_id>_<title>/
 │       ├── book.epub
-│       ├── book.md        # full book markdown (concatenation of all sections)
+│       ├── book.md          # full book Markdown
 │       └── pages/
 │           ├── page_0001.md
 │           └── page_0001.jpg
