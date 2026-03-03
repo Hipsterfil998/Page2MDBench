@@ -1,6 +1,6 @@
 <div align="center">
 
-# Book2md_Bench
+# Page2MDBench
 
 </div>
 
@@ -142,7 +142,7 @@ python eval.py --ref-dir ... --pred-dir ... --bert
 ## Project Structure
 
 ```
-book_mdBench/
+Page2MDBench/
 ├── BenchmarkBuilder.py    # Entry point — builds the dataset
 ├── eval.py                # Evaluation script
 ├── predict.py             # Prediction script (VLM via vLLM)

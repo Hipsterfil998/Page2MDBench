@@ -24,7 +24,6 @@ Range [0, 1] — higher is better.
 import re
 import unicodedata
 from collections import Counter
-
 import mistune
 
 
