@@ -7,9 +7,12 @@ The model is downloaded automatically on first use (~1 GB) and cached locally.
 Range [0, 1] — higher is better.
 """
 
+import torch
 from bert_score import score as _bert_score
 
 from ._utils import normalise
+
+_DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class BERTScore:
@@ -34,6 +37,7 @@ class BERTScore:
         _, _, f1 = _bert_score(
             [hyp], [ref],
             model_type=self._model,
+            device=_DEVICE,
             verbose=False,
         )
         return round(f1[0].item(), 6)
@@ -47,6 +51,7 @@ class BERTScore:
         _, _, f1 = _bert_score(
             hyps, refs,
             model_type=self._model,
+            device=_DEVICE,
             verbose=False,
         )
         return round(float(f1.mean().item()), 4)
